@@ -94,6 +94,16 @@ Thanks goes to these wonderful people ([:hugs: Emoji Key](https://allcontributor
                     <sub><b>Web-Head-Parker</b></sub>
                 </a>
             </td>
+            <!-- Add new entries below this line by editing README.md -->
+            <td align="center">
+                <a href="https://github.com/sharmaansh0611">
+                    <img src="https://avatars.githubusercontent.com/u/148381788?v=4" width="100px;" alt="Dipanshu Sharma" />
+                    <br />
+                    <sub><b>Dipanshu Sharma</b></sub>
+                </a>
+            </td>
+            <!-- Add new entries below this line by editing README.md -->
+
         </tr>
     </tbody>
 </table>
