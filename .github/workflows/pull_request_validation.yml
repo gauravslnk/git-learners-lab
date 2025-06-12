@@ -33,3 +33,14 @@ jobs:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
+
+  auto-merge:
+    needs: validate-pull-request
+    runs-on: ubuntu-latest
+    if: success()  # only run if validation job passed
+    steps:
+      - name: Enable auto-merge
+        uses: peter-evans/enable-pull-request-automerge@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          merge-method: squash
