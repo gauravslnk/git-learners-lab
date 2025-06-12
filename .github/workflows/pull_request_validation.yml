@@ -12,20 +12,20 @@ jobs:
   validate-pull-request:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: 📥 Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Debug branch info
+      - name: 🧪 Debug branch info
         run: |
           echo "Base ref: ${{ github.event.pull_request.base.ref }}"
           echo "Head ref: ${{ github.event.pull_request.head.ref }}"
           git branch -a
           git ls-remote --heads origin
 
-      - name: Verify branches exist
+      - name: 🔍 Verify branches exist
         run: |
           if ! git ls-remote --exit-code origin refs/heads/${{ github.event.pull_request.base.ref }}; then
             echo "::error::Base branch '${{ github.event.pull_request.base.ref }}' does not exist."
@@ -36,14 +36,14 @@ jobs:
             exit 1
           fi
 
-      - name: Prepare README files
+      - name: 🧾 Prepare README files
         run: |
           mkdir -p base head
           git fetch origin ${{ github.event.pull_request.base.ref }} --depth=1
           git show origin/${{ github.event.pull_request.base.ref }}:README.md > base/README.md || exit 1
           cp README.md head/README.md
 
-      - name: Check modified files
+      - name: 🗂️ Check modified files
         run: |
           git fetch origin ${{ github.event.pull_request.head.ref }} --depth=1
           CHANGED_FILES=$(git diff --name-only origin/${{ github.event.pull_request.base.ref }}...origin/${{ github.event.pull_request.head.ref }})
@@ -54,18 +54,18 @@ jobs:
             exit 1
           fi
 
-      - name: Set up Python
+      - name: 🐍 Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
-      - name: Install dependencies
+      - name: 📦 Install Python dependencies
         run: pip install lxml requests beautifulsoup4 markdown
 
-      - name: Run validation
+      - name: 🚦 Run PR Validation Script
         run: python .github/workflows/validate_pr.py
         env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
@@ -74,9 +74,9 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
     steps:
-      - name: Enable auto-merge
+      - name: 🤖 Enable Auto-Merge
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
           pull-request-number: ${{ github.event.pull_request.number }}
           merge-method: squash
