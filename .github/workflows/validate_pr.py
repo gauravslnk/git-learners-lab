@@ -8,84 +8,95 @@ GITHUB_TOKEN = os.getenv("GH_TOKEN")
 PR_NUMBER = os.getenv("PR_NUMBER")
 REPO = os.getenv("GITHUB_REPOSITORY")
 
-def api_get(url):
+def github_api_request(url, method="GET", json_data=None):
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json"
     }
-    return requests.get(url, headers=headers)
-
-def api_post(url, json_data):
-    headers = {
-        "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json"
-    }
-    return requests.post(url, headers=headers, json=json_data)
+    if method == "GET":
+        return requests.get(url, headers=headers)
+    else:
+        return requests.post(url, headers=headers, json=json_data)
 
 def comment_on_pr(message):
     url = f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/comments"
-    api_post(url, {"body": message})
+    github_api_request(url, "POST", {"body": message})
 
-def label_on_pr(label):
+def label_pr(label):
     url = f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/labels"
-    api_post(url, {"labels": [label]})
+    github_api_request(url, "POST", {"labels": [label]})
 
 def fail(message):
-    comment_on_pr(f"❌ {message}")
-    label_on_pr("❌ failed")
+    comment_on_pr(f"❌ Validation failed: {message}")
+    label_pr("validation-failed")
     sys.exit(1)
 
-def parse_names_from_readme(path):
-    with open(path, "r", encoding="utf-8") as f:
-        md_content = f.read()
+def parse_contributors(readme_path):
+    try:
+        with open(readme_path, "r", encoding="utf-8") as f:
+            md_content = f.read()
+    except FileNotFoundError:
+        fail(f"README.md not found at {readme_path}")
 
-    html_content = markdown.markdown(md_content, extensions=['tables'])
-    soup = BeautifulSoup(html_content, "html.parser")
+    html = markdown.markdown(md_content, extensions=["tables"])
+    soup = BeautifulSoup(html, "html.parser")
 
     table = soup.find("table")
     if not table:
-        fail(f"No table found in {path}. Please ensure you're using a valid Markdown table.")
+        fail("Contributor table not found in README.md")
 
-    names = []
+    contributors = []
     for row in table.find_all("tr"):
-        cols = row.find_all("td")
-        if len(cols) == 7:
-            for col in cols:
-                bold = col.find("strong") or col.find("b")
-                if bold:
-                    names.append((bold.get_text(strip=True), None))
-    return names
+        cells = row.find_all("td")
+        if len(cells) == 7:  # 7 contributors per row
+            for cell in cells:
+                name_tag = cell.find("strong") or cell.find("b")
+                if name_tag:
+                    contributors.append(name_tag.get_text(strip=True))
+    return contributors
 
-def main():
-    print("📄 Validating README.md contributor table...")
-
-    base_names = parse_names_from_readme("base/README.md")
-    head_names = parse_names_from_readme("head/README.md")
-
-    print("✅ Base names:", [n for n, _ in base_names])
-    print("✅ Head names:", [n for n, _ in head_names])
-
-    head_name_dict = {name: idx for idx, (name, _) in enumerate(head_names)}
-
-    if len(head_name_dict) != len(head_names):
-        fail("Duplicate contributor names found. Each contributor must be unique.")
-
-    added_names = list(set(head_name_dict) - set(n for n, _ in base_names))
-    if len(added_names) != 1:
-        fail("Only one new contributor can be added per pull request.")
-
-    added_name = added_names[0]
-    if added_name != head_names[-1][0]:
-        fail(f"Contributor `{added_name}` must be added at the end of the table.")
-
-    # Validate max 7 per row
-    soup = BeautifulSoup(markdown.markdown(open("head/README.md", encoding="utf-8").read(), extensions=["tables"]), "html.parser")
+def validate_table_structure():
+    with open("head/README.md", "r", encoding="utf-8") as f:
+        html = markdown.markdown(f.read(), extensions=["tables"])
+    
+    soup = BeautifulSoup(html, "html.parser")
     for row in soup.find_all("tr"):
         if len(row.find_all("td")) > 7:
-            fail("Each row can have a maximum of 7 contributors.")
+            fail("Each row must contain exactly 7 contributors")
 
-    comment_on_pr("✅ Validation passed! Thanks for contributing 💫")
-    label_on_pr("✅ passed")
+def main():
+    print("🚀 Starting PR validation...")
+
+    try:
+        base_contributors = parse_contributors("base/README.md")
+        head_contributors = parse_contributors("head/README.md")
+    except Exception as e:
+        fail(f"Error parsing README: {str(e)}")
+
+    print(f"Base contributors: {base_contributors}")
+    print(f"Head contributors: {head_contributors}")
+
+    # Check for duplicates
+    if len(head_contributors) != len(set(head_contributors)):
+        fail("Duplicate contributor names found")
+
+    # Check only one new contributor added
+    new_contributors = set(head_contributors) - set(base_contributors)
+    if len(new_contributors) != 1:
+        fail("Exactly one new contributor must be added per PR")
+
+    # Check new contributor is at the end
+    new_contributor = new_contributors.pop()
+    if head_contributors[-1] != new_contributor:
+        fail(f"New contributor '{new_contributor}' must be added at the end of the table")
+
+    # Validate table structure
+    validate_table_structure()
+
+    # Success
+    comment_on_pr("✅ Validation passed! Your contribution will be merged automatically.")
+    label_pr("validation-passed")
+    print("Validation completed successfully")
 
 if __name__ == "__main__":
     main()

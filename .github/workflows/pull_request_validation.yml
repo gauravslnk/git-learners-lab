@@ -2,7 +2,7 @@ name: Pull Request Validation
 
 on:
   pull_request:
-    types: [opened, synchronize]
+    types: [opened, synchronize, reopened]
 
 permissions:
   contents: write
@@ -12,53 +12,59 @@ jobs:
   validate-pull-request:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout full repo (HEAD)
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          token: ${{ secrets.GITHUB_TOKEN }}
+          ref: ${{ github.head_ref }}
 
-      - name: Check if base and head branches exist
+      - name: Debug branch info
         run: |
-          for BRANCH in ${{ github.base_ref }} ${{ github.head_ref }}; do
-            if ! git ls-remote --exit-code origin refs/heads/$BRANCH; then
-              echo "::error::❌ Branch '$BRANCH' does not exist."
-              exit 1
-            fi
-          done
+          echo "Base ref: ${{ github.base_ref }}"
+          echo "Head ref: ${{ github.head_ref }}"
+          git branch -a
 
-      - name: Prepare README files from base and head
+      - name: Verify branches exist
+        run: |
+          if ! git ls-remote --exit-code origin refs/heads/${{ github.base_ref }}; then
+            echo "::error::Base branch '${{ github.base_ref }}' does not exist."
+            exit 1
+          fi
+          if ! git ls-remote --exit-code origin refs/heads/${{ github.head_ref }}; then
+            echo "::error::Head branch '${{ github.head_ref }}' does not exist."
+            exit 1
+          fi
+
+      - name: Prepare README files
         run: |
           mkdir -p base head
-          git fetch origin ${{ github.base_ref }}
-          git show origin/${{ github.base_ref }}:README.md > base/README.md
+          git fetch origin ${{ github.base_ref }} --depth=1
+          git show origin/${{ github.base_ref }}:README.md > base/README.md || exit 1
           cp README.md head/README.md
 
-      - name: Ensure only README.md is modified
+      - name: Check modified files
         run: |
           CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          echo "📄 Changed files:"
+          echo "Changed files:"
           echo "$CHANGED_FILES"
-          for file in $CHANGED_FILES; do
-            if [ "$file" != "README.md" ]; then
-              echo "::error file=$file::❌ Only README.md should be modified. You modified: $file"
-              exit 1
-            fi
-          done
+          if [ "$(echo "$CHANGED_FILES" | wc -l)" -ne 1 ] || [ "$CHANGED_FILES" != "README.md" ]; then
+            echo "::error::Only README.md should be modified. Found changes in: $CHANGED_FILES"
+            exit 1
+          fi
 
       - name: Set up Python
         uses: actions/setup-python@v4
         with:
-          python-version: 3.10
+          python-version: "3.10"
 
       - name: Install dependencies
         run: pip install lxml requests beautifulsoup4 markdown
 
-      - name: Run validation script
+      - name: Run validation
         run: python .github/workflows/validate_pr.py
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
   auto-merge:
