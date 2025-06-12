@@ -13,38 +13,41 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Get safe branch ref
-        id: get-ref
+      - name: Checkout repo (no ref)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Full history
+
+      - name: Determine checkout target
         run: |
-          echo "HEAD_REF=${{ github.head_ref }}" >> "$GITHUB_ENV"
-          echo "BASE_REF=${{ github.base_ref }}" >> "$GITHUB_ENV"
+          echo "Base: ${{ github.base_ref }}"
+          echo "Head: ${{ github.head_ref }}"
+          BRANCH_EXISTS=$(git ls-remote --heads origin ${{ github.head_ref }} | wc -l)
+          echo "BRANCH_EXISTS=$BRANCH_EXISTS" >> $GITHUB_ENV
 
-      - name: Checkout PR or fallback
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
-        continue-on-error: true
+      - name: Checkout PR head branch if exists
+        if: env.BRANCH_EXISTS == '1'
+        run: |
+          git fetch origin ${{ github.head_ref }}
+          git checkout ${{ github.head_ref }}
 
-      - name: Fallback to base branch if PR branch is gone
-        if: failure()
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-          ref: main  # fallback to main or any default branch
+      - name: Checkout base branch if head is missing
+        if: env.BRANCH_EXISTS != '1'
+        run: |
+          echo "::warning::Head branch not found. Falling back to base."
+          git fetch origin ${{ github.base_ref }}
+          git checkout ${{ github.base_ref }}
 
       - name: Prepare README files
         run: |
           mkdir -p base head
-          BASE_SHA="${{ github.event.pull_request.base.sha }}"
-          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-          git show $BASE_SHA:README.md > base/README.md || exit 1
-          git show $HEAD_SHA:README.md > head/README.md || exit 1
+          git show ${{ github.event.pull_request.base.sha }}:README.md > base/README.md || exit 1
+          git show ${{ github.event.pull_request.head.sha }}:README.md > head/README.md || exit 1
 
       - name: Check modified files
         run: |
           CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
-          echo "$CHANGED_FILES"
+          echo "Changed files: $CHANGED_FILES"
           if [ "$(echo "$CHANGED_FILES" | wc -l)" -ne 1 ] || [ "$CHANGED_FILES" != "README.md" ]; then
             echo "::error::Only README.md should be modified."
             exit 1
@@ -62,7 +65,7 @@ jobs:
         run: python .github/workflows/validate_pr.py
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
+          PR_NUMBER: ${{ github.event.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
   auto-merge:
