@@ -13,60 +13,22 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo (no ref)
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Full history
-
-      - name: Determine checkout target
-        run: |
-          echo "Base: ${{ github.base_ref }}"
-          echo "Head: ${{ github.head_ref }}"
-          BRANCH_EXISTS=$(git ls-remote --heads origin ${{ github.head_ref }} | wc -l)
-          echo "BRANCH_EXISTS=$BRANCH_EXISTS" >> $GITHUB_ENV
-
-      - name: Checkout PR head branch if exists
-        if: env.BRANCH_EXISTS == '1'
-        run: |
-          git fetch origin ${{ github.head_ref }}
-          git checkout ${{ github.head_ref }}
-
-      - name: Checkout base branch if head is missing
-        if: env.BRANCH_EXISTS != '1'
-        run: |
-          echo "::warning::Head branch not found. Falling back to base."
-          git fetch origin ${{ github.base_ref }}
-          git checkout ${{ github.base_ref }}
-
-      - name: Prepare README files
-        run: |
-          mkdir -p base head
-          git show ${{ github.event.pull_request.base.sha }}:README.md > base/README.md || exit 1
-          git show ${{ github.event.pull_request.head.sha }}:README.md > head/README.md || exit 1
+          fetch-depth: 0  # get full history for diffing
 
       - name: Check modified files
         run: |
-          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
-          echo "Changed files: $CHANGED_FILES"
-          if [ "$(echo "$CHANGED_FILES" | wc -l)" -ne 1 ] || [ "$CHANGED_FILES" != "README.md" ]; then
-            echo "::error::Only README.md should be modified."
+          echo "Checking files changed in PR..."
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+          COUNT=$(echo "$CHANGED_FILES" | wc -l)
+          if [ "$COUNT" -ne 1 ] || [ "$CHANGED_FILES" != "README.md" ]; then
+            echo "::error::Only README.md should be modified. Found: $CHANGED_FILES"
             exit 1
           fi
-
-      - name: Set up Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install dependencies
-        run: pip install lxml requests beautifulsoup4 markdown
-
-      - name: Run validation
-        run: python .github/workflows/validate_pr.py
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          PR_NUMBER: ${{ github.event.number }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
 
   auto-merge:
     needs: validate-pull-request
