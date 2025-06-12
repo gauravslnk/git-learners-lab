@@ -12,27 +12,33 @@ jobs:
   validate-pull-request:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout base branch
-        uses: actions/checkout@v2
+      - name: Checkout full repo (HEAD)
+        uses: actions/checkout@v4
         with:
-          ref: ${{ github.base_ref }}
-          path: base
           fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Checkout head branch
-        uses: actions/checkout@v2
-        with:
-          ref: ${{ github.head_ref }}
-          path: head
-          fetch-depth: 0
-
-      - name: Check that only README.md is changed
+      - name: Check if base and head branches exist
         run: |
-          cd head
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          echo "Changed files:"
-          echo "$CHANGED_FILES"
+          for BRANCH in ${{ github.base_ref }} ${{ github.head_ref }}; do
+            if ! git ls-remote --exit-code origin refs/heads/$BRANCH; then
+              echo "::error::❌ Branch '$BRANCH' does not exist."
+              exit 1
+            fi
+          done
 
+      - name: Prepare README files from base and head
+        run: |
+          mkdir -p base head
+          git fetch origin ${{ github.base_ref }}
+          git show origin/${{ github.base_ref }}:README.md > base/README.md
+          cp README.md head/README.md
+
+      - name: Ensure only README.md is modified
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "📄 Changed files:"
+          echo "$CHANGED_FILES"
           for file in $CHANGED_FILES; do
             if [ "$file" != "README.md" ]; then
               echo "::error file=$file::❌ Only README.md should be modified. You modified: $file"
@@ -41,17 +47,17 @@ jobs:
           done
 
       - name: Set up Python
-        uses: actions/setup-python@v2
+        uses: actions/setup-python@v4
         with:
-          python-version: 3.8
+          python-version: 3.10
 
       - name: Install dependencies
-        run: pip install lxml requests
+        run: pip install lxml requests beautifulsoup4 markdown
 
-      - name: Validate PR
+      - name: Run validation script
         run: python .github/workflows/validate_pr.py
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GH_TOKEN || secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           GITHUB_REPOSITORY: ${{ github.repository }}
 
