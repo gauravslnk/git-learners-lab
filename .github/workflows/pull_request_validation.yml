@@ -13,22 +13,43 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # get full history for diffing
+          fetch-depth: 0
 
-      - name: Check modified files
+      - name: Prepare README files for diff
         run: |
-          echo "Checking files changed in PR..."
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
-          echo "Changed files:"
+          mkdir -p base head
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+          git show $BASE_SHA:README.md > base/README.md || echo "" > base/README.md
+          git show $HEAD_SHA:README.md > head/README.md || echo "" > head/README.md
+
+      - name: Ensure only README.md is modified
+        run: |
+          echo "Checking changed files..."
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
           echo "$CHANGED_FILES"
-          COUNT=$(echo "$CHANGED_FILES" | wc -l)
-          if [ "$COUNT" -ne 1 ] || [ "$CHANGED_FILES" != "README.md" ]; then
-            echo "::error::Only README.md should be modified. Found: $CHANGED_FILES"
+          if [ "$(echo "$CHANGED_FILES" | wc -l)" -ne 1 ] || [ "$CHANGED_FILES" != "README.md" ]; then
+            echo "::error::Only README.md should be modified. Found changes in: $CHANGED_FILES"
             exit 1
           fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.10"
+
+      - name: Install Python dependencies
+        run: pip install lxml requests beautifulsoup4 markdown
+
+      - name: Run PR validation script
+        run: python .github/workflows/validate_pr.py
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
 
   auto-merge:
     needs: validate-pull-request
