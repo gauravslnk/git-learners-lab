@@ -13,44 +13,52 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout pull request
+      - name: Get safe branch ref
+        id: get-ref
+        run: |
+          echo "HEAD_REF=${{ github.head_ref }}" >> "$GITHUB_ENV"
+          echo "BASE_REF=${{ github.base_ref }}" >> "$GITHUB_ENV"
+
+      - name: Checkout PR or fallback
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0  # Fetch all history to access base commit
+          fetch-depth: 0
+          ref: ${{ github.head_ref }}
+        continue-on-error: true
 
-      - name: 📄 Prepare README files
+      - name: Fallback to base branch if PR branch is gone
+        if: failure()
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          ref: main  # fallback to main or any default branch
+
+      - name: Prepare README files
         run: |
           mkdir -p base head
-
           BASE_SHA="${{ github.event.pull_request.base.sha }}"
           HEAD_SHA="${{ github.event.pull_request.head.sha }}"
-
-          echo "BASE SHA: $BASE_SHA"
-          echo "HEAD SHA: $HEAD_SHA"
-
-          # Get README from base and head
           git show $BASE_SHA:README.md > base/README.md || exit 1
           git show $HEAD_SHA:README.md > head/README.md || exit 1
 
-      - name: 📝 Check modified files
+      - name: Check modified files
         run: |
           CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
-          echo "Changed files:"
           echo "$CHANGED_FILES"
           if [ "$(echo "$CHANGED_FILES" | wc -l)" -ne 1 ] || [ "$CHANGED_FILES" != "README.md" ]; then
-            echo "::error::Only README.md should be modified. Found changes in: $CHANGED_FILES"
+            echo "::error::Only README.md should be modified."
             exit 1
           fi
 
-      - name: 🐍 Set up Python
+      - name: Set up Python
         uses: actions/setup-python@v4
         with:
           python-version: "3.10"
 
-      - name: 📦 Install dependencies
+      - name: Install dependencies
         run: pip install lxml requests beautifulsoup4 markdown
 
-      - name: 🧪 Run validation script
+      - name: Run validation
         run: python .github/workflows/validate_pr.py
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -62,7 +70,7 @@ jobs:
     runs-on: ubuntu-latest
     if: success()
     steps:
-      - name: 🔀 Enable auto-merge
+      - name: Enable auto-merge
         uses: peter-evans/enable-pull-request-automerge@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
