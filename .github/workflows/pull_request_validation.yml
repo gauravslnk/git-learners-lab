@@ -16,13 +16,14 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.head_ref }}
+          ref: ${{ github.event.pull_request.head.ref }}  # Changed from head_ref
 
       - name: Debug branch info
         run: |
           echo "Base ref: ${{ github.base_ref }}"
           echo "Head ref: ${{ github.head_ref }}"
           git branch -a
+          git ls-remote --heads origin
 
       - name: Verify branches exist
         run: |
