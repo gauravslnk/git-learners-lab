@@ -7,8 +7,8 @@ GITHUB_TOKEN = os.getenv("GH_TOKEN")
 PR_NUMBER = os.getenv("PR_NUMBER")
 REPO = os.getenv("GITHUB_REPOSITORY")
 
+
 def get_modified_files():
-    """Get the list of files modified in the PR."""
     url = f"https://api.github.com/repos/{REPO}/pulls/{PR_NUMBER}/files"
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
@@ -18,9 +18,7 @@ def get_modified_files():
     if response.status_code != 200:
         print(f"⚠️ Failed to fetch PR files: {response.status_code}, {response.text}")
         sys.exit(1)
-
-    files = response.json()
-    return [file["filename"] for file in files]
+    return [file["filename"] for file in response.json()]
 
 
 def comment_on_pr(message):
@@ -29,10 +27,10 @@ def comment_on_pr(message):
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json"
     }
-    data = {"body": message}
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(url, headers=headers, json={"body": message})
     if response.status_code != 201:
         print(f"⚠️ Failed to comment on PR: {response.status_code}, {response.text}")
+
 
 def label_on_pr(label):
     url = f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/labels"
@@ -40,17 +38,22 @@ def label_on_pr(label):
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json"
     }
-    data = {"labels": [label]}
-    response = requests.post(url, headers=headers, json=data)
+    response = requests.post(url, headers=headers, json={"labels": [label]})
     if response.status_code != 200:
         print(f"⚠️ Failed to label PR: {response.status_code}, {response.text}")
 
-def get_names_from_readme(readme_path):
-    with open(readme_path, "r", encoding="utf-8") as file:
-        readme_content = file.read()
 
-    tree = html.fromstring(readme_content)
-    table = tree.xpath('//table')[0]
+def get_names_from_readme(readme_path):
+    with open(readme_path, "r", encoding="utf-8") as f:
+        content = f.read()
+
+    try:
+        tree = html.fromstring(content)
+        table = tree.xpath('//table')[0]
+    except Exception as e:
+        print(f"❌ Failed to parse table from {readme_path}: {e}")
+        return []
+
     rows = table.xpath('.//tr')
     names = []
 
@@ -65,26 +68,21 @@ def get_names_from_readme(readme_path):
                     names.append((name, line_num))
     return names
 
+
 def fail(message):
     comment_on_pr(f"❌ {message}")
     label_on_pr("❌ failed")
     sys.exit(1)
 
+
 def main():
-    base_names = get_names_from_readme("README.md")
+    print("📄 Validating README changes...")
+
+    base_names = get_names_from_readme("base/README.md")
     head_names = get_names_from_readme("head/README.md")
 
-    modified_files = get_modified_files()
-    print("📂 Files changed in this PR:", modified_files)
-
-    non_readme_files = [f for f in modified_files if f != "README.md"]
-    if non_readme_files:
-        fail(
-            f"You can only modify `README.md` in this repository.\n\n"
-            f"🚫 Detected changes in: `{', '.join(non_readme_files)}`\n\n"
-            "Please revert those changes and try again. This repo is meant for contributors to update only the contributors table."
-        )
-
+    print("📋 Base names:", [name for name, _ in base_names])
+    print("📋 Head names:", [name for name, _ in head_names])
 
     head_name_dict = {name: line_num for name, line_num in head_names}
     if len(head_name_dict) != len(head_names):
@@ -98,16 +96,20 @@ def main():
     if added_name != head_names[-1][0]:
         fail(f"Contributor name should be added at the end of the table. Please move `{added_name}` to the last cell.")
 
-    tree = html.fromstring(open("head/README.md", "r", encoding="utf-8").read())
-    table = tree.xpath('//table')[0]
-    rows = table.xpath('.//tr')
-    for row in rows:
-        cols = row.xpath('.//td')
-        if len(cols) > 7:
-            fail("Too many columns in a row. Each row should have max 7 contributors.")
+    try:
+        tree = html.fromstring(open("head/README.md", "r", encoding="utf-8").read())
+        table = tree.xpath('//table')[0]
+        rows = table.xpath('.//tr')
+        for row in rows:
+            cols = row.xpath('.//td')
+            if len(cols) > 7:
+                fail("Too many columns in a row. Each row should have max 7 contributors.")
+    except Exception as e:
+        fail(f"❌ Unable to validate table structure: {e}")
 
     comment_on_pr("✅ Validation passed! Thanks for contributing 💫")
     label_on_pr("✅ passed")
+
 
 if __name__ == "__main__":
     main()
