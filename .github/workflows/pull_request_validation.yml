@@ -4,6 +4,10 @@ on:
   pull_request:
     types: [opened, synchronize]
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   validate-pull-request:
     runs-on: ubuntu-latest
@@ -50,7 +54,7 @@ jobs:
   auto-merge:
     needs: validate-pull-request
     runs-on: ubuntu-latest
-    if: success()  # only run if validation job passed
+    if: success()
     steps:
       - name: Enable auto-merge
         uses: peter-evans/enable-pull-request-automerge@v3
