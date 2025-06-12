@@ -30,7 +30,7 @@ To maintain consistency and keep things easy to review:
 * ✅ Add your card **at the end** of the contributors list
 * ✅ Do **not duplicate** existing entries
 * ✅ Each row can have a **maximum of 7 cards**
-* ✅ Only modify `README.md` (unless you’re fixing another issue)
+* ✅ 🔒 **Only modify `README.md`** — PRs touching other files will be automatically rejected
 
 ---
 
@@ -115,6 +115,8 @@ code .
 
 ### 💾 5. Save & Commit Your Changes
 
+🛑 Make sure **you’ve only edited `README.md`**
+
 ```bash
 git add README.md
 git commit -m "Added <Your Name> to contributors list"
@@ -156,7 +158,11 @@ Wait a few seconds...
 #### ❌ If failed:
 
 * Red ❌ checkmark
-* Bot comments with what went wrong (e.g. wrong position, duplicate)
+* Bot comments with what went wrong:
+
+  * ❌ Added multiple names
+  * ❌ Not at the end
+  * ❌ Changed other files besides `README.md`
 
 Fix it, commit again, and push — no need to open a new PR.
 
@@ -173,6 +179,15 @@ Boom! You’ve just:
 * ✅ Made a PR
 * ✅ Passed bot validation
 * ✅ Made your first open-source contribution!
+
+---
+
+## ❓ FAQ: Why Only `README.md`?
+
+This project is designed to help new contributors get started **safely** and **confidently**.
+
+To protect the project from accidental or harmful changes, we **only allow updates to `README.md`**, specifically the contributors section.
+🛡️ All PRs are automatically validated, and changes to any other files are rejected.
 
 ---
 
@@ -193,4 +208,3 @@ For any help, feel free to:
 * Ask in the DSC group
 * Or [Open an Issue](https://github.com/gauravslnk/git-learners-lab/issues)
 
----

@@ -19,6 +19,19 @@ jobs:
           ref: ${{ github.head_ref }}
           path: head
 
+      - name: Check that only README.md is changed
+        run: |
+          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          echo "Changed files:"
+          echo "$CHANGED_FILES"
+
+          for file in $CHANGED_FILES; do
+            if [ "$file" != "README.md" ]; then
+              echo "::error file=$file::❌ Only README.md should be modified. You modified: $file"
+              exit 1
+            fi
+          done
+
       - name: Set up Python
         uses: actions/setup-python@v2
         with:

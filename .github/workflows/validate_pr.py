@@ -7,6 +7,22 @@ GITHUB_TOKEN = os.getenv("GH_TOKEN")
 PR_NUMBER = os.getenv("PR_NUMBER")
 REPO = os.getenv("GITHUB_REPOSITORY")
 
+def get_modified_files():
+    """Get the list of files modified in the PR."""
+    url = f"https://api.github.com/repos/{REPO}/pulls/{PR_NUMBER}/files"
+    headers = {
+        "Authorization": f"Bearer {GITHUB_TOKEN}",
+        "Accept": "application/vnd.github+json"
+    }
+    response = requests.get(url, headers=headers)
+    if response.status_code != 200:
+        print(f"⚠️ Failed to fetch PR files: {response.status_code}, {response.text}")
+        sys.exit(1)
+
+    files = response.json()
+    return [file["filename"] for file in files]
+
+
 def comment_on_pr(message):
     url = f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/comments"
     headers = {
@@ -57,6 +73,18 @@ def fail(message):
 def main():
     base_names = get_names_from_readme("README.md")
     head_names = get_names_from_readme("head/README.md")
+
+    modified_files = get_modified_files()
+    print("📂 Files changed in this PR:", modified_files)
+
+    non_readme_files = [f for f in modified_files if f != "README.md"]
+    if non_readme_files:
+        fail(
+            f"You can only modify `README.md` in this repository.\n\n"
+            f"🚫 Detected changes in: `{', '.join(non_readme_files)}`\n\n"
+            "Please revert those changes and try again. This repo is meant for contributors to update only the contributors table."
+        )
+
 
     head_name_dict = {name: line_num for name, line_num in head_names}
     if len(head_name_dict) != len(head_names):
