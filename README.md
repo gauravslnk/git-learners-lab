@@ -87,6 +87,13 @@ Thanks goes to these wonderful people ([:hugs: Emoji Key](https://allcontributor
                 </a>
             </td>
             <!-- Add new entries below this line by editing README.md -->
+            <td align="center">
+                <a href="https://github.com/Web-Head-Parker/">
+                    <img src="https://avatars.githubusercontent.com/u/216041267?v=4" width="100px;" alt="Web-Head-Parker" />
+                    <br />
+                    <sub><b>Web-Head-Parker</b></sub>
+                </a>
+            </td>
         </tr>
     </tbody>
 </table>
