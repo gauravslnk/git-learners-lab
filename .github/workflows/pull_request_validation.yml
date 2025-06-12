@@ -16,7 +16,8 @@ jobs:
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          ref: ${{ github.event.pull_request.head.sha }}
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
 
       - name: 🐛 Debug branch info
         run: |
@@ -25,7 +26,7 @@ jobs:
           git branch -a
           git ls-remote --heads origin
 
-      - name: ✅ Verify branches exist
+      - name: ✅ Verify base branch exists
         run: |
           if ! git ls-remote --exit-code origin refs/heads/${{ github.event.pull_request.base.ref }}; then
             echo "::error::Base branch '${{ github.event.pull_request.base.ref }}' does not exist."
