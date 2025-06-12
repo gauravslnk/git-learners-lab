@@ -95,6 +95,13 @@ Thanks goes to these wonderful people ([:hugs: Emoji Key](https://allcontributor
                 </a>
             </td>
             <!-- Add new entries below this line by editing README.md -->
+            <td align="center">
+                <a href="https://github.com/sudo-DuskWind">
+                    <img src="https://avatars.githubusercontent.com/u/216082456?v=4" width="100px;" alt="DuskWind" />
+                    <br />
+                    <sub><b>DuskWind</b></sub>
+                </a>
+            </td>
         </tr>
     </tbody>
 </table>
