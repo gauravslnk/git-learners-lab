@@ -99,7 +99,7 @@ Thanks goes to these wonderful people ([:hugs: Emoji Key](https://allcontributor
                 <a href="https://github.com/sharmaansh0611">
                     <img src="https://avatars.githubusercontent.com/u/148381788?v=4" width="100px;" alt="Dipanshu Sharma" />
                     <br />
-                    <sub><b>Your Name</b></sub>
+                    <sub><b>Dipanshu Sharma</b></sub>
                 </a>
             </td>
             <!-- Add new entries below this line by editing README.md -->
