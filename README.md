@@ -13,19 +13,6 @@ This project is specially designed for beginners who want to:
 
 ---
 
-## 🔗 Quick Links
-
-- [🎯 Goal](#-goal)  
-- [🌍 What is Open Source?](#-what-is-open-source)  
-- [🛠 What You Will Learn](#-what-you-will-learn)  
-- [📚 Learn Git & GitHub](#-learn-git--github)  
-- [🤖 Automated PR Validation](#-automated-pr-validation)  
-- [✍️ How to Contribute](#-how-to-contribute)  
-- [💖 Our Contributors](#-our-contributors)  
-- [🧠 Join the Journey](#-join-the-journey)  
-
----
-
 ## 🎯 Goal
 
 To help first-time contributors learn how to use Git & GitHub by making their first pull request in a safe, beginner-friendly environment.
