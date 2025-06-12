@@ -103,7 +103,6 @@ Thanks goes to these wonderful people ([:hugs: Emoji Key](https://allcontributor
                 </a>
             </td>
             <!-- Add new entries below this line by editing README.md -->
-
         </tr>
     </tbody>
 </table>
