@@ -13,43 +13,28 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: 📥 Checkout repository
+      - name: 📥 Checkout pull request
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
-          ref: ${{ github.head_ref }}
-
-      - name: 🐛 Debug branch info
-        run: |
-          echo "Base ref: ${{ github.base_ref }}"
-          echo "Head ref: ${{ github.head_ref }}"
-          git branch -a
-
-      - name: ✅ Verify branches exist
-        run: |
-          if ! git ls-remote --exit-code origin refs/heads/${{ github.base_ref }}; then
-            echo "::error::Base branch '${{ github.base_ref }}' does not exist."
-            exit 1
-          fi
-          if ! git ls-remote --exit-code origin refs/heads/${{ github.head_ref }}; then
-            echo "::error::Head branch '${{ github.head_ref }}' does not exist."
-            exit 1
-          fi
+          fetch-depth: 0  # Fetch all history to access base commit
 
       - name: 📄 Prepare README files
         run: |
           mkdir -p base head
-          git fetch origin ${{ github.base_ref }} --depth=1
-          git show origin/${{ github.base_ref }}:README.md > base/README.md || exit 1
-          if [ ! -f README.md ]; then
-            echo "::error::README.md not found in head commit."
-            exit 1
-          fi
-          cp ./README.md head/README.md
+
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+          echo "BASE SHA: $BASE_SHA"
+          echo "HEAD SHA: $HEAD_SHA"
+
+          # Get README from base and head
+          git show $BASE_SHA:README.md > base/README.md || exit 1
+          git show $HEAD_SHA:README.md > head/README.md || exit 1
 
       - name: 📝 Check modified files
         run: |
-          CHANGED_FILES=$(git diff --name-only origin/${{ github.base_ref }}...HEAD)
+          CHANGED_FILES=$(git diff --name-only ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }})
           echo "Changed files:"
           echo "$CHANGED_FILES"
           if [ "$(echo "$CHANGED_FILES" | wc -l)" -ne 1 ] || [ "$CHANGED_FILES" != "README.md" ]; then
