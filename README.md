@@ -103,4 +103,4 @@ So let’s get started, one PR at a time! 🎯
 
 ---
 
-> Maintained with ❤️ by DSC Core Team
+> Maintained with ❤️ by Gaurav Solanki
