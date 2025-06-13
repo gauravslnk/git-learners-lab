@@ -1,7 +1,5 @@
 # 👨‍💻 Git Learners Lab
 
-![PR Validation](https://github.com/gauravslnk/git-learners-lab/actions/workflows/pull_request_validation.yml/badge.svg)
-
 Welcome to **Git Learners Lab** – your gateway to learning Git, GitHub, and how open source works — the fun way!
 
 This project is specially designed for beginners who want to:
@@ -71,7 +69,7 @@ Follow the steps in our [CONTRIBUTING.md](CONTRIBUTING.md) guide.
 
 ### Contributors  
 
-Thanks goes to these wonderful people ([:hugs: Emoji Key](https://allcontributors.org/docs/en/emoji-key)):
+Thanks goes to these wonderful people :
 
 <!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
 <!-- prettier-ignore-start -->
@@ -102,6 +100,8 @@ Thanks goes to these wonderful people ([:hugs: Emoji Key](https://allcontributor
                     <sub><b>DuskWind</b></sub>
                 </a>
             </td>
+            <!-- Add new entries below this line by editing README.md -->
+            <!-- Add new entries above this line by editing README.md -->
         </tr>
     </tbody>
 </table>
