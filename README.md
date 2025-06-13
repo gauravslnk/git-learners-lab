@@ -71,43 +71,47 @@ Follow the steps in our [CONTRIBUTING.md](CONTRIBUTING.md) guide.
 
 Thanks goes to these wonderful people :
 
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
+<!-- ALL-CONTRIBUTORS-LIST:START -->
 <!-- prettier-ignore-start -->
 <!-- markdownlint-disable -->
 <table>
-    <tbody>
-        <tr>
-            <td align="center">
-                <a href="https://github.com/gauravslnk/">
-                    <img src="https://avatars.githubusercontent.com/u/92677309?v=4" width="100px;" alt="Gaurav Solanki" />
-                    <br />
-                    <sub><b>gauravslnk</b></sub>
-                </a>
-            </td>
-            <!-- Add new entries below this line by editing README.md -->
-            <td align="center">
-                <a href="https://github.com/sharmaansh0611">
-                    <img src="https://avatars.githubusercontent.com/u/148381788?v=4" width="100px;" alt="Dipanshu Sharma" />
-                    <br />
-                    <sub><b>sharmaansh0611</b></sub>
-                </a>
-            </td>
-            <!-- Add new entries below this line by editing README.md -->
-            <td align="center">
-                <a href="https://github.com/sudo-DuskWind">
-                    <img src="https://avatars.githubusercontent.com/u/216082456?v=4" width="100px;" alt="DuskWind" />
-                    <br />
-                    <sub><b>sudo-DuskWind</b></sub>
-                </a>
-            </td>
-            <!-- Add new entries below this line by editing README.md -->
-            <!-- Add new entries above this line by editing README.md -->
-        </tr>
-    </tbody>
+  <tbody>
+    <tr>
+      <td align="center">
+        <a href="https://github.com/gauravslnk/">
+          <img src="https://avatars.githubusercontent.com/u/92677309?v=4" width="100px;" alt="Gaurav Solanki" />
+          <br />
+          <sub><b>gauravslnk</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/yash2607-del">
+          <img src="https://avatars.githubusercontent.com/yash2607-del" width="100px;" alt="Yash Raj" />
+          <br />
+          <sub><b>Yash Raj</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/sharmaansh0611">
+          <img src="https://avatars.githubusercontent.com/u/148381788?v=4" width="100px;" alt="Dipanshu Sharma" />
+          <br />
+          <sub><b>sharmaansh0611</b></sub>
+        </a>
+      </td>
+      <td align="center">
+        <a href="https://github.com/sudo-DuskWind">
+          <img src="https://avatars.githubusercontent.com/u/216082456?v=4" width="100px;" alt="DuskWind" />
+          <br />
+          <sub><b>sudo-DuskWind</b></sub>
+        </a>
+      </td>
+    </tr>
+  </tbody>
 </table>
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
 
 ---
 
