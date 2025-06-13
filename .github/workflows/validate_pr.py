@@ -24,11 +24,13 @@ def check_contributor_addition(pr):
     for file in files:
         if file.filename == "README.md":
             # Fetch the content of the README.md file
-            contents = repo.get_contents("README.md")
+            contents = repo.get_contents("README.md", ref=pr.head.sha)
             readme_content = contents.decoded_content.decode()
 
             # Check if the PR author is added at the end
-            pattern = re.compile(r'<td align="center">\s*<a href="https://github\.com/' + pr.user.login + r'">\s*<img.*?/\s*>\s*<br\s*/?>\s*<sub><b>' + re.escape(pr.user.login) + r'<\/b><\/sub>\s*<\/a>\s*<\/td>')
+            pattern = re.compile(
+                r'<td align="center">\s*<a href="https://github\.com/' + pr.user.login + r'">\s*<img.*?/\s*>\s*<br\s*/?>\s*<sub><b>' + re.escape(pr.user.login) + r'</b></sub>\s*<\/a>\s*<\/td>'
+            )
             matches = pattern.findall(readme_content)
 
             if not matches:
