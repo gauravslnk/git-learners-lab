@@ -112,6 +112,13 @@ Thanks to these wonderful people for making this project what it is:
         </a>
       </td>
       <!-- Add new entries below this line by editing README.md -->
+      <td align="center">
+  <a href="https://github.com/hmzakt">
+    <img src="https://avatars.githubusercontent.com/u/175908432?v=4" width="100px;" alt="hmzakt" />
+    <br />
+    <sub><b>hmzakt</b></sub>
+  </a>
+</td>
     </tr>
   </tbody>
 </table>
