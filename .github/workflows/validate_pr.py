@@ -18,111 +18,125 @@ FAILURE_LABEL = "❌ failed"
 def github_api_request(url, method="GET", json_data=None):
     headers = {
         "Authorization": f"Bearer {GITHUB_TOKEN}",
-        "Accept": "application/vnd.github+json"
+        "Accept": "application/vnd.github+json",
+        "X-GitHub-Api-Version": "2022-11-28"
     }
     try:
         if method == "GET":
-            r = requests.get(url, headers=headers)
+            response = requests.get(url, headers=headers)
         else:
-            r = requests.post(url, headers=headers, json=json_data)
-        r.raise_for_status()
-        return r
+            response = requests.post(url, headers=headers, json=json_data)
+        response.raise_for_status()
+        return response
     except requests.exceptions.RequestException as e:
-        print(f"[ERROR] API request failed: {str(e)}")
+        print(f"[ERROR] API request failed: {str(e)}", file=sys.stderr)
         return None
 
 def comment_on_pr(message):
     url = f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/comments"
     return github_api_request(url, "POST", {"body": message})
 
-def label_pr(label):
+def manage_pr_labels(label):
+    # First remove any existing validation labels
+    github_api_request(
+        f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/labels/{FAILURE_LABEL}",
+        "DELETE"
+    )
+    github_api_request(
+        f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/labels/{SUCCESS_LABEL}",
+        "DELETE"
+    )
+    
+    # Add the new label
     url = f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/labels"
     return github_api_request(url, "POST", {"labels": [label]})
 
 def fail(message):
-    print(f"[FAIL] {message}")
-    try:
-        comment_on_pr(f"❌ Validation failed: {message}")
-        label_pr(FAILURE_LABEL)
-    except:
-        print("Warning: Could not post comment or label - continuing anyway")
+    print(f"[FAIL] {message}", file=sys.stderr)
+    comment_on_pr(f"❌ Validation failed: {message}")
+    manage_pr_labels(FAILURE_LABEL)
     sys.exit(1)
 
-# Contributor parser
-def parse_contributors(readme_path):
+def success():
+    print("[SUCCESS] All checks passed", file=sys.stderr)
+    comment_on_pr("✅ Validation passed! Your contribution will be merged automatically. 💫")
+    manage_pr_labels(SUCCESS_LABEL)
+    sys.exit(0)
+
+def validate_contributor_table(readme_path):
     try:
         with open(readme_path, "r", encoding="utf-8") as f:
             md_content = f.read()
     except FileNotFoundError:
         fail(f"README.md not found at {readme_path}")
 
+    # Convert markdown to HTML
     html = markdown.markdown(md_content, extensions=["tables"])
     soup = BeautifulSoup(html, "html.parser")
 
+    # Verify table exists
     table = soup.find("table")
     if not table:
         fail("Contributor table not found in README.md")
 
     contributors = []
-    for row in table.find_all("tr"):
+    for row in table.find_all("tr")[1:]:  # Skip header row
         cells = row.find_all("td")
+        if len(cells) > 7:
+            fail("Maximum 7 contributors allowed per row")
+            
         for cell in cells:
             name_tag = cell.find("b")
             if not name_tag:
-                fail("Each contributor name must be enclosed in <b> tags")
+                fail("Each contributor must be wrapped in <b> tags")
+                
             name = name_tag.get_text(strip=True)
-            if not re.match(r"^[\w\s\-\.]{1,39}$", name):  # Updated regex
-                fail(f"Invalid name format: '{name}'")
+            if not re.match(r"^[a-zA-Z0-9_. -]+$", name):
+                fail(f"Invalid name format: '{name}'. Only letters, numbers, spaces, dots, underscores and hyphens allowed")
+                
             contributors.append(name)
+            
     return contributors
 
-# Row structure checker
-def validate_table_structure():
-    with open("head/README.md", "r", encoding="utf-8") as f:
-        html = markdown.markdown(f.read(), extensions=["tables"])
-    
-    soup = BeautifulSoup(html, "html.parser")
-    for i, row in enumerate(soup.find_all("tr")):
-        cells = row.find_all("td")
-        if len(cells) > 7:
-            fail(f"Row {i+1} has more than 7 contributors ({len(cells)} found)")
-
 def main():
-    print("🚀 Starting PR validation...")
+    print("🚀 Starting PR validation...", file=sys.stderr)
 
     try:
-        base_contributors = parse_contributors("base/README.md")
-        head_contributors = parse_contributors("head/README.md")
+        # Get contributors from both versions
+        old_contributors = validate_contributor_table("base/README.md")
+        new_contributors = validate_contributor_table("head/README.md")
+        
+        print(f"Current contributors: {len(old_contributors)}", file=sys.stderr)
+        print(f"Updated contributors: {len(new_contributors)}", file=sys.stderr)
+
+        # Check for duplicates
+        if len(new_contributors) != len(set(new_contributors)):
+            fail("Duplicate contributor names found")
+
+        # Check what changed
+        added = set(new_contributors) - set(old_contributors)
+        removed = set(old_contributors) - set(new_contributors)
+
+        # Validate changes
+        if len(added) == 1 and not removed:
+            # Simple addition case
+            new_name = added.pop()
+            if new_contributors[-1] != new_name:
+                fail(f"New contributor '{new_name}' must be added at the end")
+        elif len(added) == 1 and len(removed) == 1:
+            # Name correction case
+            old_name = removed.pop()
+            new_name = added.pop()
+            if new_contributors.count(new_name) > 1:
+                fail("Name correction would create duplicate entries")
+        else:
+            fail("Each PR must either:\n- Add exactly one new contributor\n- Correct exactly one existing name")
+
+        # All checks passed
+        success()
+
     except Exception as e:
-        fail(f"Error parsing README: {str(e)}")
-
-    print(f"Base contributors: {base_contributors}")
-    print(f"Head contributors: {head_contributors}")
-
-    # Check for duplicates
-    if len(head_contributors) != len(set(head_contributors)):
-        fail("Duplicate contributor names found")
-
-    # Ensure exactly one contributor added
-    new_contributors = set(head_contributors) - set(base_contributors)
-    if len(new_contributors) != 1:
-        fail("Exactly one new contributor must be added per PR")
-
-    # Ensure contributor is at the end
-    new_contributor = new_contributors.pop()
-    if head_contributors[-1] != new_contributor:
-        fail(f"New contributor '{new_contributor}' must be added at the end of the table")
-
-    # Validate table structure
-    validate_table_structure()
-
-    # All good!
-    try:
-        comment_on_pr("✅ Validation passed! Your contribution will be merged automatically. 💫")
-        label_pr(SUCCESS_LABEL)
-    except:
-        print("Warning: Could not post success comment - continuing anyway")
-    print("✅ Validation completed successfully.")
+        fail(f"Unexpected error during validation: {str(e)}")
 
 if __name__ == "__main__":
     main()
