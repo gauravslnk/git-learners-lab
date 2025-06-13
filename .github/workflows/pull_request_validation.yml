@@ -23,4 +23,6 @@ jobs:
     - name: Validate PR
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      run: python .github/scripts/validate_pr.py
+        GITHUB_REPOSITORY: ${{ github.repository }}
+        GITHUB_PR_NUMBER: ${{ github.event.pull_request.number }}
+      run: python .github/workflows/validate_pr.py
