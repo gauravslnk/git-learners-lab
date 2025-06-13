@@ -2,15 +2,13 @@ import os
 import re
 import sys
 from github import Github
+from github.GithubException import GithubException
 
-# Initialize GitHub instance
+# Initialize GitHub API
 g = Github(os.getenv("GITHUB_TOKEN"))
 repo = g.get_repo(os.getenv("GITHUB_REPOSITORY"))
-
-# Get the pull request
 pr = repo.get_pull(int(os.getenv("GITHUB_PR_NUMBER")))
 
-# Check if only README.md is modified
 def check_files_changed(pr):
     files = pr.get_files()
     for file in files:
@@ -18,40 +16,63 @@ def check_files_changed(pr):
             return False
     return True
 
-# Check if the contributor is added at the end
 def check_contributor_addition(pr):
-    files = pr.get_files()
-    for file in files:
-        if file.filename == "README.md":
-            # Fetch the content of the README.md file
-            contents = repo.get_contents("README.md", ref=pr.head.sha)
-            readme_content = contents.decoded_content.decode()
+    try:
+        contents = repo.get_contents("README.md", ref=pr.head.sha)
+        readme = contents.decoded_content.decode().strip()
+    except GithubException as e:
+        pr.create_issue_comment(f"❌ Error reading README.md: {e}")
+        return False
 
-            # Check if the PR author is added at the end
-            pattern = re.compile(
-                r'<td align="center">\s*<a href="https://github\.com/' + pr.user.login + r'">\s*<img.*?/\s*>\s*<br\s*/?>\s*<sub><b>' + re.escape(pr.user.login) + r'</b></sub>\s*<\/a>\s*<\/td>'
-            )
-            matches = pattern.findall(readme_content)
+    username = pr.user.login
 
-            if not matches:
-                return False
+    # Regex pattern to match contributor card
+    pattern = re.compile(
+        rf'<td align="center">\s*<a href="https://github\.com/{re.escape(username)}">\s*<img.*?>\s*<br\s*/?>\s*<sub><b>{re.escape(username)}</b></sub>\s*</a>\s*</td>',
+        re.IGNORECASE | re.DOTALL
+    )
 
-            # Check if the addition is at the end
-            last_match_position = readme_content.rfind(matches[-1])
-            if last_match_position == -1 or last_match_position + len(matches[-1]) != len(readme_content.strip()):
-                return False
+    matches = list(pattern.finditer(readme))
+
+    if not matches:
+        return False
+
+    last_match = matches[-1]
+    # Check that the last contributor card is at the end of the file (after trimming trailing whitespace)
+    if not readme.rstrip().endswith(readme[last_match.start():last_match.end()]):
+        return False
 
     return True
 
-# Validate PR
+def check_max_seven_per_row(pr):
+    try:
+        contents = repo.get_contents("README.md", ref=pr.head.sha)
+        readme = contents.decoded_content.decode()
+    except GithubException as e:
+        pr.create_issue_comment(f"❌ Error reading README.md for row validation: {e}")
+        return False
+
+    # Count <td> tags between each <tr>
+    rows = re.findall(r'<tr>(.*?)</tr>', readme, re.DOTALL)
+    for i, row in enumerate(rows):
+        td_count = len(re.findall(r'<td\s+align="center">', row))
+        if td_count > 7:
+            pr.create_issue_comment(f"❌ Validation failed: Row {i+1} has more than 7 contributor cards. Please limit to 7 per row.")
+            return False
+    return True
+
+# Run validations
 if not check_files_changed(pr):
-    pr.create_issue_comment("❌ Validation failed: Only README.md should be modified.")
+    pr.create_issue_comment("❌ Validation failed: Only `README.md` should be modified.")
     sys.exit(1)
 
 if not check_contributor_addition(pr):
-    pr.create_issue_comment("❌ Validation failed: Contributor not added correctly at the end.")
+    pr.create_issue_comment("❌ Validation failed: Contributor not added correctly or not at the end of the list.")
     sys.exit(1)
 
-# Auto-merge the PR if validations pass
+if not check_max_seven_per_row(pr):
+    sys.exit(1)
+
+# All validations passed
 pr.create_issue_comment("✅ Validation passed! Thanks for contributing 💫")
 pr.merge(merge_method='squash')
