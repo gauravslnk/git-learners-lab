@@ -1,7 +1,5 @@
-name: Pull Request Validation
-
 on:
-  pull_request:
+  pull_request_target:
     branches: [ main ]
 
 permissions:
@@ -13,8 +11,10 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout repository
+    - name: Checkout main repo
       uses: actions/checkout@v4
+      with:
+        ref: ${{ github.event.pull_request.base.ref }}
 
     - name: Set up Python
       uses: actions/setup-python@v4
