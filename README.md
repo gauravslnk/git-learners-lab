@@ -111,13 +111,6 @@ Thanks to these wonderful people for making this project what it is:
           <sub><b>sudo-DuskWind</b></sub>
         </a>
       </td>
-      <td align="center">
-        <a href="https://github.com/Cyberpunk-San">
-          <img src="https://avatars.githubusercontent.com/u/176785013?v=4" width="100px;" alt="San the cyberpunk " />
-          <br />
-          <sub><b>Cyberpunk-San</b></sub>
-        </a>
-      </td>
       <!-- Add new entries below this line by editing README.md -->
       <td align="center">
   <a href="https://github.com/hmzakt">
