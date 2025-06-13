@@ -1,59 +1,65 @@
-# 🌱 Welcome to git-learners-lab – Contributor Guide
+# 🌱 Welcome to Git Learners Lab – Contributor Guide
 
-> A complete, beginner-friendly guide to help you make your **first open-source contribution** via GitHub – even if you’ve never used Git before!
+> A beginner-friendly, step-by-step guide to help you make your **first open-source contribution** – even if you’ve never used Git before!
 
 ---
 
-## ✅ Prerequisites (Only Once)
+## ✅ Prerequisites (One-time Setup)
 
-Before contributing, please:
+Before contributing, please ensure:
 
-- 🔧 [Install Git](https://git-scm.com/downloads)
-- 🧑‍💻 Create a GitHub account (if you don’t already have one)
-- 💡 Optional: Install [VS Code](https://code.visualstudio.com/) as your code editor
+- 🔧 [Git is installed](https://git-scm.com/downloads)
+- 🧑‍💻 You have a GitHub account
+- 💡 (Optional) [VS Code installed](https://code.visualstudio.com/) as your editor
 
-To verify Git installation, run:
+Check Git installation:
 
 ```bash
 git --version
 ````
 
-You should see something like `git version 2.xx.x`
+You should see something like `git version 2.xx.x`.
 
 ---
 
-## 📜 Contribution Rules
+## 📜 Contribution Rules & Guidelines
 
-To maintain consistency and keep things easy to review:
+To keep contributions consistent and the project beginner-friendly:
 
-* ✅ Add **only one contributor** per Pull Request (PR)
-* ✅ Add your card **at the end** of the contributors list
-* ✅ Do **not duplicate** existing entries
-* ✅ Each row can have a **maximum of 7 cards**
-* ✅ 🔒 **Only modify `README.md`** — PRs touching other files will be automatically rejected
+### ✅ Do:
+
+* Add **only one contributor card per PR**
+* Place your card **at the end** of the contributors list
+* Follow the correct **HTML format** (card template below)
+* Start a new row only **after 7 cards** in the previous row
+* Modify **only the `README.md`** file
+
+### ❌ Don't:
+
+* Edit or delete any other content in `README.md`
+* Change any other file in the repo
+* Add more than one card per PR
+* Insert your card in the middle or top of the list
+* Create multiple PRs for the same change
+
+> ⚠️ PRs violating these rules will be automatically rejected by the GitHub bot.
 
 ---
 
-> 💡 Tip: Use `Ctrl + Shift + V` in VS Code to preview the `README.md` before committing.
-
----
-
-## 📝 Step-by-Step Guide to Contribute
+## 📝 How to Contribute – Step-by-Step
 
 ---
 
 ### 🔁 1. Fork This Repository
 
-Head to the main repo:
+Go to:
 👉 [https://github.com/gauravslnk/git-learners-lab](https://github.com/gauravslnk/git-learners-lab)
 
-Click the **Fork** button (top-right), then select your GitHub account.
+Click **Fork** (top right corner), and choose your GitHub account.
 
 ---
 
-### 💻 2. Clone Your Fork
-
-Open your terminal / Git Bash and run:
+### 💻 2. Clone Your Fork Locally
 
 ```bash
 git clone https://github.com/<your-username>/git-learners-lab.git
@@ -68,20 +74,18 @@ cd git-learners-lab
 git checkout -b add-your-username
 ```
 
-This keeps your changes separate and organized.
-
 ---
 
-### ✨ 4. Add Yourself to the Contributors Table
+### ✨ 4. Add Your Contributor Card
 
-1. Open the project in VS Code:
+1. Open the project folder in VS Code:
 
 ```bash
 code .
 ```
 
 2. Open `README.md`
-3. Scroll to the section between:
+3. Scroll to the section marked:
 
 ```html
 <!-- ALL-CONTRIBUTORS-LIST:START -->
@@ -89,7 +93,8 @@ code .
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 ```
 
-4. At the end of the last row (or start a new row if needed), add this block:
+4. Find the **last row** of contributors (each row has up to 7 cards).
+5. At the end of the row, or in a new row if needed, add this block:
 
 ```html
 <td align="center">
@@ -101,21 +106,23 @@ code .
 </td>
 ```
 
-#### 🔁 Replace:
+#### Replace placeholders:
 
-| Placeholder     | Replace with                                               |
-| --------------- | ---------------------------------------------------------- |
-| `your-username` | Your GitHub username                                       |
-| `your-id`       | Your GitHub avatar ID *(Right-click → Copy image address)* |
-| `Your User Name`| Your User name                                             |
+| Placeholder      | Replace with                                               |
+| ---------------- | ---------------------------------------------------------- |
+| `your-username`  | Your GitHub username                                       |
+| `your-id`        | Your avatar image ID (Right-click avatar → Copy image URL) |
+| `Your User Name` | Your User name                                             |
 
-✅ Ensure your card is at the **end** of the list.
+✅ Make sure your card:
+
+* Is added **at the end**
+* **Follows the format exactly**
+* **Starts a new row** if you're the 8th contributor
 
 ---
 
-### 💾 5. Save & Commit Your Changes
-
-🛑 Make sure **you’ve only edited `README.md`**
+### 💾 5. Save, Add, Commit
 
 ```bash
 git add README.md
@@ -124,18 +131,18 @@ git commit -m "Added <Your User Name> to contributors list"
 
 ---
 
-### 🚀 6. Push Your Branch to GitHub
+### 🚀 6. Push Your Branch
 
 ```bash
-git push origin add-your-user-name
+git push origin add-your-username
 ```
 
 ---
 
 ### 🔃 7. Create a Pull Request (PR)
 
-1. Go to your fork on GitHub
-2. Click the `Compare & pull request` button
+1. Visit your fork on GitHub
+2. Click **Compare & pull request**
 3. Use a title like:
 
 ```text
@@ -148,63 +155,65 @@ Added My Name to Contributors List ✨
 
 ### 🤖 8. Let the Bot Validate Your PR
 
-Wait a few seconds...
+Once submitted, the GitHub bot will check your PR automatically.
 
-#### ✅ If successful:
+#### ✅ If it passes:
 
-* Green checkmark ✅ on the PR
-* Bot comments: `"✅ Validation passed! Thanks for contributing 💫"`
+* PR gets auto-merged 🥳
+* You’ll see: `✅ Validation passed! Thanks for contributing 💫`
 
-#### ❌ If failed:
+#### ❌ If it fails:
 
-* Red ❌ checkmark
-* Bot comments with what went wrong:
-
-  * ❌ Added multiple names
-  * ❌ Not at the end
-  * ❌ Changed other files besides `README.md`
-
-Fix it, commit again, and push — no need to open a new PR.
+* You'll get a comment explaining what went wrong (e.g., wrong file, not last, over 7 per row)
+* Fix your code and push again — no need to reopen PR
 
 ---
 
 ### 🎉 9. Celebrate!
 
-Boom! You’ve just:
-
-* ✅ Forked a repo
-* ✅ Cloned it locally
-* ✅ Created a branch
-* ✅ Edited a file
-* ✅ Made a PR
-* ✅ Passed bot validation
-* ✅ Made your first open-source contribution!
-
----
-
-## ❓ FAQ: Why Only `README.md`?
-
-This project is designed to help new contributors get started **safely** and **confidently**.
-
-To protect the project from accidental or harmful changes, we **only allow updates to `README.md`**, specifically the contributors section.
-🛡️ All PRs are automatically validated, and changes to any other files are rejected.
+You’ve just:
+✅ Forked a repo
+✅ Cloned it
+✅ Created a branch
+✅ Edited a file
+✅ Opened a PR
+✅ Passed auto-validation
+✅ Made your first open-source contribution!
 
 ---
 
-## 📚 Want to Learn More?
+## ❓ FAQ
 
-Check out this beginner-friendly resource:
+### Why Only `README.md`?
 
-📘 [Chai aur Git - Docs](https://docs.chaicode.com/youtube/chai-aur-git/introduction/)
+This is a **safe sandbox** for beginners to practice open-source without fear of breaking anything. The bot only accepts PRs that update `README.md` (specifically the contributors section).
+
+### What Happens If I Break a Rule?
+
+Your PR will:
+
+* Be flagged automatically
+* Show an ❌ message
+* Not be merged until corrected
+
+You can simply fix it and push again to the same branch.
+
+---
+
+## 📚 More Resources
+
+* [Chai aur Git Docs](https://docs.chaicode.com/youtube/chai-aur-git/introduction/)
+* [GitHub Docs](https://docs.github.com/en)
+* [First Contributions](https://firstcontributions.github.io/)
+
+---
+
+## 💬 Need Help?
+
+Open an [Issue](https://github.com/gauravslnk/git-learners-lab/issues) or reach out via our community group.
 
 ---
 
 ## ❤️ Thank You!
 
-Thanks for joining the community and contributing to **git-learners-lab**. We’re excited to have you here — and hope this was the start of many open-source adventures ahead 🚀
-
-For any help, feel free to:
-
-* Ask in the DSC group
-* Or [Open an Issue](https://github.com/gauravslnk/git-learners-lab/issues)
-
+We’re glad you’re here. This project is your first step into the world of open source — and we’re cheering you on 🚀
