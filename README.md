@@ -126,7 +126,14 @@ Thanks to these wonderful people for making this project what it is:
           <sub><b>hmzakt</b></sub>
         </a>
       </td>
-            <!-- Add new entries below this line by editing README.md -->
+            <td align="center">
+  <a href="https://github.com/codebyaru">
+    <img src="https://avatars.githubusercontent.com/u/183202783" width="100px;" alt="Arushi Jain" />
+    <br />
+    <sub><b>Arushi Jain</b></sub>
+  </a>
+</td>
+<!-- Add new entries below this line by editing README.md -->
     </tr>
   </tbody>
 </table>
