@@ -81,7 +81,7 @@ Thanks goes to these wonderful people :
                 <a href="https://github.com/gauravslnk/">
                     <img src="https://avatars.githubusercontent.com/u/92677309?v=4" width="100px;" alt="Gaurav Solanki" />
                     <br />
-                    <sub><b>Gaurav Solanki</b></sub>
+                    <sub><b>gauravslnk</b></sub>
                 </a>
             </td>
             <!-- Add new entries below this line by editing README.md -->
@@ -89,7 +89,7 @@ Thanks goes to these wonderful people :
                 <a href="https://github.com/sharmaansh0611">
                     <img src="https://avatars.githubusercontent.com/u/148381788?v=4" width="100px;" alt="Dipanshu Sharma" />
                     <br />
-                    <sub><b>Dipanshu Sharma</b></sub>
+                    <sub><b>sharmaansh0611</b></sub>
                 </a>
             </td>
             <!-- Add new entries below this line by editing README.md -->
@@ -97,7 +97,7 @@ Thanks goes to these wonderful people :
                 <a href="https://github.com/sudo-DuskWind">
                     <img src="https://avatars.githubusercontent.com/u/216082456?v=4" width="100px;" alt="DuskWind" />
                     <br />
-                    <sub><b>DuskWind</b></sub>
+                    <sub><b>sudo-DuskWind</b></sub>
                 </a>
             </td>
             <!-- Add new entries below this line by editing README.md -->
