@@ -126,6 +126,13 @@ Thanks to these wonderful people for making this project what it is:
           <sub><b>hmzakt</b></sub>
         </a>
       </td>
+      <td align="center">
+        <a href="https://github.com/mantrajain03">
+          <img src="https://avatars.githubusercontent.com/u/165055539?v=4" width="100px;" alt="mantrajain03" />
+          <br />
+          <sub><b>mantrajain03</b></sub>
+        </a>
+      </td>
             <!-- Add new entries below this line by editing README.md -->
     </tr>
   </tbody>
