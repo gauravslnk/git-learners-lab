@@ -25,129 +25,112 @@ Open Source means making software accessible to everyone — where the source co
 - 🛠 Modify  
 - 🧑‍💻 Contribute  
 
-It's the heartbeat of developer communities across the globe 💖
-
-Ever asked yourself:
-
-> _"How do I make my first contribution?"_  
-> _"What’s a PR?"_  
-> _"What if I break something?"_
-
-No worries — that’s exactly what this lab is here for 💪
+It’s how developers build together — and you’re invited!
 
 ---
 
 ## 🛠 What You Will Learn
 
-In this project, you'll learn how to:
+In this project, you’ll learn how to:
 
 - Install and use Git  
 - Fork a GitHub repository  
 - Clone it to your local machine  
-- Make changes using a new branch  
+- Create a new branch  
+- Add a `.txt` file in the right place  
 - Submit a Pull Request (PR)  
-- Get your name proudly added as a contributor 🌟  
+- See it get auto-merged when it passes checks 🎉
 
 ---
 
-## 📚 Beginner-Friendly Git & GitHub Resource
+## 📝 How Does It Work?
 
-Check out this community favorite:
+Each contributor adds a **`.txt` file inside the `contributors/` folder**.
 
-➡️ [Chai aur Git – Beginner Docs](https://docs.chaicode.com/youtube/chai-aur-git/introduction/)
+This file must:
+
+- Be named after your **GitHub username**
+- Contain:
+  - Your **Name** (first line)
+  - Your **Favorite Celebrity or Character** (second line — for fun!)
+
+🗂 Example: `contributors/your-github-username.txt`
+
+```txt
+Ada Lovelace
+Iron Man
+````
 
 ---
 
 ## 🤖 Automated PR Validation
 
-Every PR is automatically checked by our GitHub bot to ensure:
+When you create a Pull Request:
 
-- ✅ Only `README.md` is modified  
-- ✅ Your name and profile card are correctly added  
-- ✅ Your card is placed at the **end** of the contributors table  
-- ✅ No more than **7 contributors per row**  
-- ❌ No duplicates or invalid formatting  
+✅ Our GitHub bot checks if:
 
-If your PR passes validation — it gets auto-merged! 💥
+* Only files inside `contributors/` were added or changed
+* Each file has the `.txt` extension
+* No other part of the repo was modified
 
----
+✅ If your PR follows the rules:
 
-## ✍️ How to Contribute
+* It gets **automatically merged**
+* 🎉 You’ve contributed to open source!
 
-Just follow the steps in our 👉 [CONTRIBUTING.md](CONTRIBUTING.md) guide.
+❌ If your PR doesn’t follow the rules:
 
-It's easy and beginner-safe!
-
----
-
-## 💖 Our Contributors
-
-Thanks to these wonderful people for making this project what it is:
-
-<!-- ALL-CONTRIBUTORS-LIST:START - Do not remove or modify this section -->
-<!-- prettier-ignore-start -->
-<!-- markdownlint-disable -->
-<table>
-  <tbody>
-    <tr>
-      <td align="center">
-        <a href="https://github.com/gauravslnk/">
-          <img src="https://avatars.githubusercontent.com/u/92677309?v=4" width="100px;" alt="Gaurav Solanki" />
-          <br />
-          <sub><b>gauravslnk</b></sub>
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/sharmaansh0611">
-          <img src="https://avatars.githubusercontent.com/u/148381788?v=4" width="100px;" alt="Dipanshu Sharma" />
-          <br />
-          <sub><b>sharmaansh0611</b></sub>
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/sudo-DuskWind">
-          <img src="https://avatars.githubusercontent.com/u/216082456?v=4" width="100px;" alt="DuskWind" />
-          <br />
-          <sub><b>sudo-DuskWind</b></sub>
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/Cyberpunk-San">
-          <img src="https://avatars.githubusercontent.com/u/176785013?v=4" width="100px;" alt="San the cyberpunk " />
-          <br />
-          <sub><b>Cyberpunk-San</b></sub>
-        </a>
-      </td>
-      <!-- Add new entries below this line by editing README.md -->
-      <td align="center">
-        <a href="https://github.com/hmzakt">
-          <img src="https://avatars.githubusercontent.com/u/175908432?v=4" width="100px;" alt="hmzakt" />
-          <br />
-          <sub><b>hmzakt</b></sub>
-        </a>
-      </td>
-      <td align="center">
-        <a href="https://github.com/mantrajain03">
-          <img src="https://avatars.githubusercontent.com/u/165055539?v=4" width="100px;" alt="mantrajain03" />
-          <br />
-          <sub><b>mantrajain03</b></sub>
-        </a>
-      </td>
-            <!-- Add new entries below this line by editing README.md -->
-    </tr>
-  </tbody>
-</table>
-<!-- markdownlint-enable -->
-<!-- prettier-ignore-end -->
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+* It will **fail validation**
+* You'll get an error message
+* You can fix the mistake and push again
 
 ---
 
-## 🧠 Join the Journey
+## 🚀 How to Contribute
 
-You're not just learning Git — you're becoming part of a global open-source community.  
-Let’s start this journey together — one PR at a time! 🚀
+Just follow the simple steps in 👉 [CONTRIBUTING.md](CONTRIBUTING.md)
+
+You’ll learn how to:
+
+1. Fork and clone the repo
+2. Create a new branch
+3. Add your `.txt` file in the right folder
+4. Push your changes
+5. Create a PR
+6. Watch the bot validate and auto-merge it 💫
 
 ---
 
-> Maintained with ❤️ by [Gaurav Solanki](https://github.com/gauravslnk)
+## 💬 Why This Format?
+
+We've designed this repo to remove formatting confusion and reduce the chance of errors — all you need to do is:
+
+* Add your `.txt` file
+* Use a consistent format
+* Let the bot handle the rest!
+
+This way, **beginners stay focused on learning Git & GitHub**, without worrying about complex HTML or table formats.
+
+---
+
+## 👥 Contributors
+
+All contributors are tracked by their `.txt` file in the `contributors/` folder.
+
+Want to be on the list? Just follow the [guide](CONTRIBUTING.md) and make your PR! Your file will be your official badge ✨
+
+---
+
+## 📚 Resources
+
+* [Chai aur Git Docs](https://docs.chaicode.com/youtube/chai-aur-git/introduction/)
+* [GitHub Docs](https://docs.github.com/)
+* [First Contributions](https://firstcontributions.github.io/)
+
+---
+
+## ❤️ Maintained by
+
+**[Gaurav Solanki](https://github.com/gauravslnk)**
+
+We're glad you're here — this is your first step into open source 🚀
