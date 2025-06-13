@@ -65,7 +65,7 @@ cd git-learners-lab
 ### 🌿 3. Create a New Branch
 
 ```bash
-git checkout -b add-your-name
+git checkout -b add-your-username
 ```
 
 This keeps your changes separate and organized.
@@ -94,9 +94,9 @@ code .
 ```html
 <td align="center">
   <a href="https://github.com/your-username">
-    <img src="https://avatars.githubusercontent.com/your-id" width="100px;" alt="Your Name" />
+    <img src="https://avatars.githubusercontent.com/your-id" width="100px;" alt="Your User Name" />
     <br />
-    <sub><b>Your Name</b></sub>
+    <sub><b>Your User Name</b></sub>
   </a>
 </td>
 ```
@@ -107,7 +107,7 @@ code .
 | --------------- | ---------------------------------------------------------- |
 | `your-username` | Your GitHub username                                       |
 | `your-id`       | Your GitHub avatar ID *(Right-click → Copy image address)* |
-| `Your Name`     | Your actual name                                           |
+| `Your User Name`| Your User name                                             |
 
 ✅ Ensure your card is at the **end** of the list.
 
@@ -119,7 +119,7 @@ code .
 
 ```bash
 git add README.md
-git commit -m "Added <Your Name> to contributors list"
+git commit -m "Added <Your User Name> to contributors list"
 ```
 
 ---
@@ -127,7 +127,7 @@ git commit -m "Added <Your Name> to contributors list"
 ### 🚀 6. Push Your Branch to GitHub
 
 ```bash
-git push origin add-your-name
+git push origin add-your-user-name
 ```
 
 ---
