@@ -20,27 +20,32 @@ def github_api_request(url, method="GET", json_data=None):
         "Authorization": f"Bearer {GITHUB_TOKEN}",
         "Accept": "application/vnd.github+json"
     }
-    if method == "GET":
-        r = requests.get(url, headers=headers)
-    else:
-        r = requests.post(url, headers=headers, json=json_data)
-    if not r.ok:
-        print(f"[HTTP Error {r.status_code}] {r.text}")
+    try:
+        if method == "GET":
+            r = requests.get(url, headers=headers)
+        else:
+            r = requests.post(url, headers=headers, json=json_data)
         r.raise_for_status()
-    return r
+        return r
+    except requests.exceptions.RequestException as e:
+        print(f"[ERROR] API request failed: {str(e)}")
+        return None
 
 def comment_on_pr(message):
     url = f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/comments"
-    github_api_request(url, "POST", {"body": message})
+    return github_api_request(url, "POST", {"body": message})
 
 def label_pr(label):
     url = f"https://api.github.com/repos/{REPO}/issues/{PR_NUMBER}/labels"
-    github_api_request(url, "POST", {"labels": [label]})
+    return github_api_request(url, "POST", {"labels": [label]})
 
 def fail(message):
     print(f"[FAIL] {message}")
-    comment_on_pr(f"❌ Validation failed: {message}")
-    label_pr(FAILURE_LABEL)
+    try:
+        comment_on_pr(f"❌ Validation failed: {message}")
+        label_pr(FAILURE_LABEL)
+    except:
+        print("Warning: Could not post comment or label - continuing anyway")
     sys.exit(1)
 
 # Contributor parser
@@ -66,8 +71,8 @@ def parse_contributors(readme_path):
             if not name_tag:
                 fail("Each contributor name must be enclosed in <b> tags")
             name = name_tag.get_text(strip=True)
-            if not re.match(r"^[\w\-\.]{1,39}$", name):
-                fail(f"Invalid GitHub username format: '{name}'")
+            if not re.match(r"^[\w\s\-\.]{1,39}$", name):  # Updated regex
+                fail(f"Invalid name format: '{name}'")
             contributors.append(name)
     return contributors
 
@@ -82,14 +87,6 @@ def validate_table_structure():
         if len(cells) > 7:
             fail(f"Row {i+1} has more than 7 contributors ({len(cells)} found)")
 
-# Optional: check contributor format
-def validate_raw_format():
-    with open("head/README.md", "r", encoding="utf-8") as f:
-        raw = f.read()
-    if not re.search(r"\|.*<b>.*<\/b>.*\|", raw):
-        fail("Contributor row must use Markdown table format with <b>Name</b> in cell.")
-
-# Main logic
 def main():
     print("🚀 Starting PR validation...")
 
@@ -119,12 +116,12 @@ def main():
     # Validate table structure
     validate_table_structure()
 
-    # Optionally enforce raw Markdown format
-    # validate_raw_format()
-
     # All good!
-    comment_on_pr("✅ Validation passed! Your contribution will be merged automatically. 💫")
-    label_pr(SUCCESS_LABEL)
+    try:
+        comment_on_pr("✅ Validation passed! Your contribution will be merged automatically. 💫")
+        label_pr(SUCCESS_LABEL)
+    except:
+        print("Warning: Could not post success comment - continuing anyway")
     print("✅ Validation completed successfully.")
 
 if __name__ == "__main__":
