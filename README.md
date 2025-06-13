@@ -128,7 +128,7 @@ Thanks to these wonderful people for making this project what it is:
       </td>
             <td align="center">
   <a href="https://github.com/codebyaru">
-    <img src="https://avatars.githubusercontent.com/u/183202783" width="100px;" alt="Arushi Jain" />
+    <img src="https://avatars.githubusercontent.com/u/183202783?v=4" width="100px;" alt="Arushi Jain" />
     <br />
     <sub><b>Arushi Jain</b></sub>
   </a>

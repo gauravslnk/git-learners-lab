@@ -8,15 +8,15 @@
 
 Before contributing, please ensure:
 
-- 🔧 [Git is installed](https://git-scm.com/downloads)
-- 🧑‍💻 You have a GitHub account
-- 💡 (Optional) [VS Code installed](https://code.visualstudio.com/) as your editor
+* 🔧 [Git is installed](https://git-scm.com/downloads)
+* 🧑‍💻 You have a GitHub account
+* 💡 (Optional) [VS Code installed](https://code.visualstudio.com/) as your editor
 
 Check Git installation:
 
 ```bash
 git --version
-````
+```
 
 You should see something like `git version 2.xx.x`.
 
@@ -24,33 +24,43 @@ You should see something like `git version 2.xx.x`.
 
 ## 📜 Contribution Rules & Guidelines
 
-To keep contributions consistent and the project beginner-friendly:
+We’ve made the contribution process super simple! Here's what you need to know:
 
 ### ✅ Do:
 
-* Add **only one contributor card per PR**
-* Place your card **at the end** of the contributors list
-* Follow the correct **HTML format** (card template below)
-* Start a new row only **after 7 cards** in the previous row
-* Modify **only the `README.md`** file
+* Create **only one `.txt` file per contributor**
+* Add your file to the **`contributors/`** folder
+* Name the file the same as your **GitHub username** (e.g., `yourusername.txt`)
+* Follow the fun format inside the file (see below)
+* You're allowed to update your file later with new PRs too
 
 ### ❌ Don't:
 
-* Edit or delete any other content in `README.md`
-* Change any other file in the repo
-* Add more than one card per PR
-* Insert your card in the middle or top of the list
-* Create multiple PRs for the same change
+* Modify any files outside the `contributors/` folder
+* Add multiple `.txt` files in one PR
+* Change other people's files
+* Add `.md`, `.js`, `.html`, etc. — only `.txt` allowed
 
-> ⚠️ PRs violating these rules will be automatically rejected by the GitHub bot.
-
----
-
-## 📝 How to Contribute – Step-by-Step
+> ⚠️ PRs that break these rules will not be merged.
 
 ---
 
-### 🔁 1. Fork This Repository
+## 📝 Your `.txt` File Format
+
+Each `.txt` file should follow this simple format:
+
+```
+Your Full Name
+Your Favorite Celebrity or Public Figure
+```
+
+---
+
+## 📅 Step-by-Step Guide to Contribute
+
+---
+
+### 🔀 1. Fork This Repository
 
 Go to:
 👉 [https://github.com/gauravslnk/git-learners-lab](https://github.com/gauravslnk/git-learners-lab)
@@ -76,57 +86,32 @@ git checkout -b add-your-username
 
 ---
 
-### ✨ 4. Add Your Contributor Card
+### ✨ 4. Create Your Contributor `.txt` File
 
-1. Open the project folder in VS Code:
+1. Open the project in VS Code (or any editor)
+2. Go to the `contributors/` folder
+3. Create a new file named: `your-github-username.txt`
+4. Inside that file, add:
 
-```bash
-code .
+```
+Your Full Name
+Your Favorite Celebrity or Public Figure
 ```
 
-2. Open `README.md`
-3. Scroll to the section marked:
+Example:
 
-```html
-<!-- ALL-CONTRIBUTORS-LIST:START -->
-...
-<!-- ALL-CONTRIBUTORS-LIST:END -->
 ```
-
-4. Find the **last row** of contributors (each row has up to 7 cards).
-5. At the end of the row, or in a new row if needed, add this block:
-
-```html
-<td align="center">
-  <a href="https://github.com/your-username">
-    <img src="https://avatars.githubusercontent.com/your-id" width="100px;" alt="Your User Name" />
-    <br />
-    <sub><b>Your User Name</b></sub>
-  </a>
-</td>
+John Doe
+Jane Doe
 ```
-
-#### Replace placeholders:
-
-| Placeholder      | Replace with                                               |
-| ---------------- | ---------------------------------------------------------- |
-| `your-username`  | Your GitHub username                                       |
-| `your-id`        | Your avatar image ID (Right-click avatar → Copy image URL) |
-| `Your User Name` | Your User name                                             |
-
-✅ Make sure your card:
-
-* Is added **at the end**
-* **Follows the format exactly**
-* **Starts a new row** if you're the 8th contributor
 
 ---
 
-### 💾 5. Save, Add, Commit
+### 📂 5. Save, Add, and Commit Your Changes
 
 ```bash
-git add README.md
-git commit -m "Added <Your User Name> to contributors list"
+git add contributors/your-github-username.txt
+git commit -m "Added <Your Name> as a contributor"
 ```
 
 ---
@@ -139,14 +124,14 @@ git push origin add-your-username
 
 ---
 
-### 🔃 7. Create a Pull Request (PR)
+### 🔄 7. Create a Pull Request (PR)
 
-1. Visit your fork on GitHub
+1. Go to your fork on GitHub
 2. Click **Compare & pull request**
-3. Use a title like:
+3. Use a clear title like:
 
 ```text
-Added My Name to Contributors List ✨
+Added My Name as Contributor ✨
 ```
 
 4. Click **Create pull request**
@@ -155,27 +140,27 @@ Added My Name to Contributors List ✨
 
 ### 🤖 8. Let the Bot Validate Your PR
 
-Once submitted, the GitHub bot will check your PR automatically.
+Our GitHub bot will check your PR:
 
-#### ✅ If it passes:
+#### ✅ If everything is good:
 
-* PR gets auto-merged 🥳
-* You’ll see: `✅ Validation passed! Thanks for contributing 💫`
+* Your PR will be **automatically merged** 🎉
+* You’ll see a success message
 
-#### ❌ If it fails:
+#### ❌ If something’s wrong:
 
-* You'll get a comment explaining what went wrong (e.g., wrong file, not last, over 7 per row)
-* Fix your code and push again — no need to reopen PR
+* The bot will reject the PR
+* Just fix your file and push again — no need to reopen
 
 ---
 
 ### 🎉 9. Celebrate!
 
-You’ve just:
+You just:
 ✅ Forked a repo
 ✅ Cloned it
 ✅ Created a branch
-✅ Edited a file
+✅ Added a file
 ✅ Opened a PR
 ✅ Passed auto-validation
 ✅ Made your first open-source contribution!
@@ -184,23 +169,17 @@ You’ve just:
 
 ## ❓ FAQ
 
-### Why Only `README.md`?
+### Why Only `.txt` Files in `contributors/`?
 
-This is a **safe sandbox** for beginners to practice open-source without fear of breaking anything. The bot only accepts PRs that update `README.md` (specifically the contributors section).
+This keeps the project beginner-safe. You can experiment without worrying about breaking anything important.
 
-### What Happens If I Break a Rule?
+### Can I Update My File Later?
 
-Your PR will:
-
-* Be flagged automatically
-* Show an ❌ message
-* Not be merged until corrected
-
-You can simply fix it and push again to the same branch.
+Yes! Create a new branch, update your `.txt` file, and make another PR.
 
 ---
 
-## 📚 More Resources
+## 📚 More Learning Resources
 
 * [Chai aur Git Docs](https://docs.chaicode.com/youtube/chai-aur-git/introduction/)
 * [GitHub Docs](https://docs.github.com/en)
@@ -208,12 +187,6 @@ You can simply fix it and push again to the same branch.
 
 ---
 
-## 💬 Need Help?
-
-Open an [Issue](https://github.com/gauravslnk/git-learners-lab/issues) or reach out via our community group.
-
----
-
 ## ❤️ Thank You!
 
-We’re glad you’re here. This project is your first step into the world of open source — and we’re cheering you on 🚀
+We’re thrilled to have you here. This is your first step into open source — and we’re here to cheer you on 🚀

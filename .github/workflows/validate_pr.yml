@@ -1,0 +1,45 @@
+name: Validate and Auto-Merge Contributor PR
+
+on:
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  validate-and-merge:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout PR branch
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+          repository: ${{ github.event.pull_request.head.repo.full_name }}
+
+      - name: Filter changes
+        id: filter
+        uses: dorny/paths-filter@v2
+        with:
+          filters: |
+            only_contributor_txt:
+              - added: 'contributors/**/*.txt'
+
+      - name: Fail if invalid files modified
+        if: steps.filter.outputs.only_contributor_txt != 'true'
+        run: |
+          echo "❌ Only .txt files inside 'contributors/' should be added."
+          exit 1
+
+      - name: Auto-merge valid PR
+        if: steps.filter.outputs.only_contributor_txt == 'true'
+        uses: pascalgn/automerge-action@v0.15.6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MERGE_LABELS: ""
+          MERGE_METHOD: squash
+          MERGE_COMMIT_MESSAGE: "✅ Auto-merged valid contributor file"
