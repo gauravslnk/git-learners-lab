@@ -85,13 +85,6 @@ Thanks goes to these wonderful people :
         </a>
       </td>
       <td align="center">
-        <a href="https://github.com/yash2607-del">
-          <img src="https://avatars.githubusercontent.com/yash2607-del" width="100px;" alt="Yash Raj" />
-          <br />
-          <sub><b>Yash Raj</b></sub>
-        </a>
-      </td>
-      <td align="center">
         <a href="https://github.com/sharmaansh0611">
           <img src="https://avatars.githubusercontent.com/u/148381788?v=4" width="100px;" alt="Dipanshu Sharma" />
           <br />
@@ -105,13 +98,19 @@ Thanks goes to these wonderful people :
           <sub><b>sudo-DuskWind</b></sub>
         </a>
       </td>
+      <td align="center">
+        <a href="https://github.com/yash2607-del">
+          <img src="https://avatars.githubusercontent.com/yash2607-del" width="100px;" alt="Yash Raj" />
+          <br />
+          <sub><b>Yash Raj</b></sub>
+        </a>
+      </td>
     </tr>
   </tbody>
 </table>
 <!-- markdownlint-enable -->
 <!-- prettier-ignore-end -->
 <!-- ALL-CONTRIBUTORS-LIST:END -->
-
 
 ---
 
